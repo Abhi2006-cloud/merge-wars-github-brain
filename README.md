@@ -8,13 +8,13 @@ GitHub AI Brain – Merge Wars Edition
 
 In the ever-expanding galaxy of open-source projects, pull requests, commits, and issues clash in endless battles. You have been chosen by General Kenobi to bring balance. He has entrusted you with the Model Context Protocol (MCP)—the Force for AI—which links your AI Brain to real-world developer tools and data.
 
-Your mission is to **forge a GitHub AI Brain** that will:
+ mission is to **forge a GitHub AI Brain** that will:
 - **Sense** repositories: fetch issues, pull requests, commits, and workflows via MCP  
 - **Reason** with wisdom: analyze health metrics, commit trends, bottlenecks, and stale work  
 - **Assist** your allies: suggest reviewers, label issues, draft release notes, and compare PRs  
 - **Respond** in natural language: answer queries like “What’s blocking the release?” or “Summarize the last sprint’s changes.”  
 
-Will your creation merely list open issues, or will it rise as a strategic commander—predicting merge conflicts, assigning reviewers, and guiding developers toward victory?
+Will  creation merely list open issues, or will it rise as a strategic commander—predicting merge conflicts, assigning reviewers, and guiding developers toward victory?
 
 ---
 

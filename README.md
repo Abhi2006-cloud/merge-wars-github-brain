@@ -167,3 +167,9 @@ text
 - Restart Docker Desktop  
 - Verify with `docker info`  
 - Re-pull `ghcr.io/github/github-mcp-server`
+
+
+<img width="1440" height="900" alt="Screenshot 2025-08-19 at 9 52 58 PM" src="https://github.com/user-attachments/assets/c9a35b00-5e99-4c97-a6a0-b415107ba6ed" />
+
+<img width="1440" height="900" alt="Screenshot 2025-08-19 at 10 23 51 PM" src="https://github.com/user-attachments/assets/5d08aa72-c9b3-4661-867a-fd23cc4dd4d3" />
+

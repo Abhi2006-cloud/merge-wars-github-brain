@@ -1,0 +1,5 @@
+haystack-ai==2.8.0
+google-genai-haystack==1.1.0
+mcp-haystack==0.3.0
+python-dotenv==1.0.1
+

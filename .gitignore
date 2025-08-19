@@ -1,0 +1,26 @@
+# Environment variables (DO NOT COMMIT API KEYS)
+.env
+
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# MacOS files
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+
+# Submission files (optional - you might want to include these)
+submission/
+
+# Logs
+*.log

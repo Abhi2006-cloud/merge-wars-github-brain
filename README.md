@@ -2,6 +2,8 @@
 
 *An intelligent AI companion that brings balance to repository chaos using the Model Context Protocol (MCP)*
 
+*For IIIT BH Hackathon - Merge Wars Edition*
+
 [![macOS](https://img.shields.io/badge/macOS-Compatible-green.svg)](https://www.apple.com/macos/)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-Required-blue.svg)](https://www.docker.com/)
@@ -27,4 +29,3 @@
 - Terminal access
 
 ### 1. Clone & Setup
-

@@ -7,6 +7,8 @@ Intelligent repository management, health scoring, and multi-repo analysis.
 import os
 import re
 import time
+import json
+import csv
 import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timezone, timedelta
@@ -381,3 +383,65 @@ Supported Queries:
 
 💡 *Note: Always use 'owner/repo' format for individual repository queries.*
 """
+
+    def export_report_json(self, data: Dict[str, Any], filepath: str) -> str:
+        """Export report dictionary to a JSON file.
+
+        Args:
+            data: Data dictionary to export
+            filepath: Destination file path
+
+        Returns:
+            Path of written JSON file.
+        """
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        logger.info(f"Report exported to JSON: {filepath}")
+        return filepath
+
+    def export_report_csv(self, data: Dict[str, Any], filepath: str) -> str:
+        """Export analysis metrics to a flat CSV file.
+
+        Args:
+            data: Health analysis or organization audit dictionary
+            filepath: Destination file path
+
+        Returns:
+            Path of written CSV file.
+        """
+        with open(filepath, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            if "top_repositories" in data:
+                # Organization audit report format
+                writer.writerow(["Repository", "Health Rating", "Activity Score", "Stars", "Forks", "Open Issues"])
+                for repo in data.get("top_repositories", []):
+                    writer.writerow([
+                        repo.get("repository"),
+                        repo.get("health_rating"),
+                        repo.get("activity_score"),
+                        repo.get("stars"),
+                        repo.get("forks"),
+                        repo.get("open_issues"),
+                    ])
+            elif "repository" in data:
+                # Single repository report format
+                writer.writerow(["Metric", "Value"])
+                writer.writerow(["Repository", data.get("repository")])
+                writer.writerow(["Description", data.get("description")])
+                writer.writerow(["Health Rating", data.get("health_rating")])
+                writer.writerow(["Activity Score", data.get("activity_score")])
+                writer.writerow(["Stars", data.get("stars")])
+                writer.writerow(["Forks", data.get("forks")])
+                writer.writerow(["Open Issues", data.get("open_issues")])
+                writer.writerow(["Open PRs", data.get("open_prs")])
+                writer.writerow(["Recent Commits", data.get("recent_commits")])
+                writer.writerow(["Last Updated", data.get("last_updated")])
+            else:
+                # Generic dictionary key-value output
+                writer.writerow(["Key", "Value"])
+                for k, v in data.items():
+                    writer.writerow([k, str(v)])
+
+        logger.info(f"Report exported to CSV: {filepath}")
+        return filepath
+

@@ -111,8 +111,24 @@ class MultiRepoAnalyzer:
 
         return output
 
+    def export_org_report(self, report: Dict[str, Any], filepath: str, fmt: str = "json") -> str:
+        """Export organization audit report to specified file format (json/csv).
+
+        Args:
+            report: Organization analysis result dictionary
+            filepath: Destination file path
+            fmt: File format ('json' or 'csv')
+
+        Returns:
+            Path of written file.
+        """
+        if fmt.lower() == "csv":
+            return self.agent.export_report_csv(report, filepath)
+        return self.agent.export_report_json(report, filepath)
+
 
 if __name__ == "__main__":
+
     analyzer = MultiRepoAnalyzer()
     print("Testing MultiRepoAnalyzer...")
     result = analyzer.organization_analysis("github", max_repos=3)

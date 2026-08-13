@@ -1,192 +1,246 @@
-GitHub AI Brain – Merge Wars Edition
+# GitHub AI Brain — Merge Wars Edition
 
-*An intelligent AI companion for GitHub repository management, built from scratch using the Model Context Protocol (MCP) and Haystack.*
-
----
-
-## 🎯 Challenge Overview
-
-In the ever-expanding galaxy of open-source projects, pull requests, commits, and issues clash in endless battles. You have been chosen by General Kenobi to bring balance. He has entrusted you with the Model Context Protocol (MCP)—the Force for AI—which links your AI Brain to real-world developer tools and data.
-
- mission is to **forge a GitHub AI Brain** that will:
-- **Sense** repositories: fetch issues, pull requests, commits, and workflows via MCP  
-- **Reason** with wisdom: analyze health metrics, commit trends, bottlenecks, and stale work  
-- **Assist** your allies: suggest reviewers, label issues, draft release notes, and compare PRs  
-- **Respond** in natural language: answer queries like “What’s blocking the release?” or “Summarize the last sprint’s changes.”  
-
-Will  creation merely list open issues, or will it rise as a strategic commander—predicting merge conflicts, assigning reviewers, and guiding developers toward victory?
+An intelligent repository analysis and benchmarking engine that evaluates project health, contributor velocity, issue dynamics, and CI/CD workflow statuses across individual repositories and entire organizations.
 
 ---
 
-## 🛠 Prerequisites
+## Why This Project?
 
-- **macOS 10.15+**  
-- **Python 3.8+** (install via Homebrew or python.org)  
-- **Docker Desktop for Mac**  
-- **GitHub Personal Access Token (classic)** with scopes:  
-  - `repo`  
-  - `read:org`  
-  - `workflow`  
-  - `admin:org`  
-  - `project`  
-- **Google Gemini API key** (free)
+Managing multiple open-source or enterprise software repositories requires continuous visibility into contributor velocity, open issue bottlenecks, pull request review latency, and CI/CD build stability. Manually tracking these metrics across dozens of repositories is inefficient and fragmented.
+
+**GitHub AI Brain** addresses this engineering challenge by aggregating raw metadata from the GitHub API into actionable metrics. It calculates an objective **Activity Health Score (0–100)** based on contribution recency and issue/PR resolution patterns, providing developers, engineering managers, and open-source maintainers with immediate insights through natural language terminal queries.
 
 ---
 
-## ⚙️ Setup Instructions
+## Features
 
-1. **Clone & Navigate**  
-git clone <your-repo-url>
-cd merge-wars-github-brain
-
-text
-
-2. **Create & Activate Virtual Environment**  
-python3 -m venv .venv
-source .venv/bin/activate
-
-text
-
-3. **Install Dependencies**  
-pip install --upgrade pip
-pip install -r requirements.txt
-
-text
-
-4. **Configure Environment Variables**  
-Copy template and edit:
-cp .env.example .env
-nano .env
-
-text
-Add your keys:
-GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"
-GOOGLE_API_KEY="your_gemini_api_key_here"
-
-text
-
-5. **Pull & Test Docker MCP Server**  
-docker pull ghcr.io/github/github-mcp-server
-docker run --rm ghcr.io/github/github-mcp-server --version
-
-text
-
-6. **Export GitHub Token in Shell**  
-export GITHUB_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
-
-text
+- 🏥 **Repository Health Scoring**: Computes a weighted 0–100 activity score and assigns health ratings (`🟢 Excellent`, `🟡 Good`, `🟠 Fair`, `🔴 Needs Attention`) based on recent commits, issues, and PR velocity.
+- 📊 **Competitive Benchmarking**: Performs side-by-side comparative analysis between competing or related repositories (e.g. `tensorflow/tensorflow` vs `pytorch/pytorch`).
+- 🏢 **Organization-Level Audits**: Aggregates total stars, forks, open issue bottlenecks, and average activity scores across an entire GitHub organization (e.g. `facebook`, `microsoft`).
+- ⚙️ **CI/CD Workflow Monitoring**: Tracks GitHub Actions run conclusions and highlights failing build pipelines.
+- 💬 **Natural Language Query Interface**: Routes user queries to specific sub-systems using pattern-matching and intent detection.
+- 🔑 **Resilient Rate-Limit Handling**: Supports authenticated execution (5,000 req/hr) with graceful degradation under unauthenticated mode (60 req/hr).
 
 ---
 
-## 🚀 Usage
+## Architecture
 
-### Interactive CLI  
-source .venv/bin/activate
-python main.py
-
-text
-- Type `help` for example queries  
-- Type `demo` to run built-in demonstration  
-- Type `exit` to quit  
-
-### Demo Script (45/45 Points)  
-python demo.py
-
-text
-Runs all feature categories and reports a perfect 45/45 score.
-
-### Automated Testing  
-python test_agent.py
-
-text
-Verifies each requirement category: basic calls, insights, automation, and multi-repo support.
+```text
+┌─────────────────────────────────────────────────────────┐
+│                 Terminal Interface Layer                │
+│            (main.py / cli_interface.py / demo.py)       │
+└────────────────────────────┬────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────┐
+│              Natural Language Query Router              │
+│               (Intent & Handle Extraction)              │
+└──────────────┬───────────────────────────┬──────────────┘
+               │                           │
+               ▼                           ▼
+┌─────────────────────────────┐ ┌─────────────────────────┐
+│    GitHubAIBrain Agent      │ │    MultiRepoAnalyzer    │
+│  (Health Scoring Engine)    │ │   (Org Audit Engine)    │
+└──────────────┬──────────────┘ └──────────┬──────────────┘
+               │                           │
+               └─────────────┬─────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────┐
+│                 GitHub REST API Service                 │
+│               (httprequests / endpoints)                │
+└────────────────────────────┬────────────────────────────┘
+                             │
+                             ▼
+                 GitHub Cloud Infrastructure
+```
 
 ---
 
-## 📂 Project Structure
+## Tech Stack
 
+- **Core Runtime**: Python 3.8+
+- **API Integration**: GitHub REST API v3 via `requests`
+- **Environment Management**: `python-dotenv`
+- **Testing & Verification**: `pytest` unit test suite with mocked API dependencies & `unittest` integration tests
+- **Architecture Pattern**: Modular OOP with decoupled interface, core agent, and multi-repo analysis layers
+
+---
+
+## Project Structure
+
+```text
 merge-wars-github-brain/
-├── .env.example # Template for API keys
-├── .env #  API keys (not committed)
-├── README.md # This documentation
-├── requirements.txt # Python dependencies
-├── main.py # Entry point → CLI
-├── github_agent.py # Core agent implementation
-├── cli_interface.py # Terminal UI
-├── multi_repo.py # Multi-repository analysis
-├── test_agent.py # Automated tests
-├── demo.py # Comprehensive demonstration
-└── .venv/ # Python virtual environment
-
-text
-
----
-
-## 🧑‍🏫 Code Explanation
-
-- **github_agent.py**  
-  Defines `GitHubAIBrain`:  
-  - Loads `.env`, configures MCP server via Docker stdio.  
-  - Registers MCPTool instances for issues, PRs, commits, workflows, and automation.  
-  - Creates a Haystack `Agent` with Google Gemini LLM and a strategic system prompt.  
-  - Exposes `.query()`, `.repository_insights()`, `.compare_repositories()`.
-
-- **cli_interface.py**  
-  Wraps `GitHubAIBrain` in an interactive CLI:  
-  - Displays banner, handles `help`, `demo`, `exit`, and natural-language queries.
-
-- **multi_repo.py**  
-  Adds organization-wide and competitive analysis methods:  
-  - `organization_analysis(org_name)`  
-  - `competitive_analysis(repo_pairs)`
-
-- **test_agent.py**  
-  Executes predefined queries to validate each feature category and prints pass/fail stats.
-
-- **demo.py**  
-  Demonstrates all six feature categories in sequence and prints a score out of 45.
+├── main.py              # CLI entry point script
+├── github_agent.py      # Core GitHubAIBrain engine & health scoring logic
+├── multi_repo.py        # Organization-level auditor & multi-repo benchmarking
+├── cli_interface.py     # Interactive terminal user interface & banner rendering
+├── demo.py              # Comprehensive feature demonstration script
+├── test_agent.py        # Integration test suite
+├── tests/               # Unit test suite with offline mocks
+│   ├── test_github_agent.py
+│   └── test_multi_repo.py
+├── requirements.txt     # Python runtime & testing dependencies
+├── .env.example         # Template environment variable configuration
+└── .gitignore            # Git exclusion rules
+```
 
 ---
 
-## 🧪 Troubleshooting
+## Getting Started
 
-- **LibreSSL Warning**  
-  macOS system Python uses LibreSSL. This is non-fatal. To silence, install Python via Homebrew:
-brew install python
+### Prerequisites
 
-text
+- **Python**: 3.8 or higher
+- **GitHub Personal Access Token** *(Optional, recommended)*: Classic token with `repo` and `read:org` scopes for 5,000 requests/hour limit.
 
-- **Token Not Detected**  
-Ensure you run:
-export GITHUB_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN"
+### Setup Instructions
 
-text
-**after** activating `.venv`.
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/merge-wars-github-brain.git
+   cd merge-wars-github-brain
+   ```
 
-- **Docker Issues**  
-- Restart Docker Desktop  
-- Verify with `docker info`  
-- Re-pull `ghcr.io/github/github-mcp-server`
+2. **Create and Activate Virtual Environment**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
 
+3. **Install Dependencies**
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 
-<img width="1440" height="900" alt="Screenshot 2025-08-19 at 9 52 58 PM" src="https://github.com/user-attachments/assets/c9a35b00-5e99-4c97-a6a0-b415107ba6ed" />
+4. **Configure Environment Variables**
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and add your GitHub token:
+   ```env
+   GITHUB_TOKEN=ghp_your_actual_token_here
+   ```
 
-<img width="1440" height="900" alt="Screenshot 2025-08-19 at 10 23 51 PM" src="https://github.com/user-attachments/assets/5d08aa72-c9b3-4661-867a-fd23cc4dd4d3" />
+5. **Run Unit Tests**
+   ```bash
+   python3 -m pytest tests/
+   ```
 
+6. **Start Interactive Application**
+   ```bash
+   python3 main.py
+   ```
 
+---
 
+## Environment Variables
 
+| Variable Name | Required | Default | Description |
+| :--- | :---: | :---: | :--- |
+| `GITHUB_TOKEN` | Optional | `None` | Personal Access Token for GitHub API access (increases rate limit from 60 to 5,000 req/hr). |
 
-https://github.com/user-attachments/assets/e57fed6c-0aab-4afa-ba5c-25ca1c292943
+---
 
+## Usage & Commands
 
+### Natural Language Query Examples
 
+Launch `python3 main.py` and run any of the following queries:
 
-https://github.com/user-attachments/assets/deabe15f-ab09-49dc-8638-2226080c0498
+- **Repository Health Audit**:
+  ```text
+  [GitHub AI Brain] > Analyze microsoft/vscode repository
+  ```
+- **Competitive Benchmarking**:
+  ```text
+  [GitHub AI Brain] > Compare tensorflow/tensorflow vs pytorch/pytorch
+  ```
+- **Organization Audit**:
+  ```text
+  [GitHub AI Brain] > Analyze organization facebook
+  ```
+- **Issue Audit**:
+  ```text
+  [GitHub AI Brain] > Show open issues in facebook/react
+  ```
+- **Pull Request Velocity**:
+  ```text
+  [GitHub AI Brain] > List pull requests in kubernetes/kubernetes
+  ```
+- **Workflow Run Monitoring**:
+  ```text
+  [GitHub AI Brain] > Check workflow status in pytorch/pytorch
+  ```
 
+### Special Built-In Commands
 
+- `help` / `h` / `?`: Display detailed usage instructions.
+- `demo`: Run interactive demo selection menu.
+- `clear` / `cls`: Clear terminal output.
+- `exit` / `quit` / `q`: Exit application safely.
 
+### Automated Demo & Integration Tests
 
+```bash
+# Run comprehensive demo script
+python3 demo.py
 
+# Run integration tests against live GitHub API
+python3 test_agent.py
+```
 
+---
 
+## Engineering Decisions
+
+1. **GitHub REST API v3 over GraphQL**: Selected REST API v3 for high reliability and zero schema overhead when accessing public metadata across diverse user repositories without mandatory OAuth scope escalation.
+2. **Weighted Activity Score Model**: The 0–100 health score balances recent commit frequency (40 points max), issue updates (30 points max), and pull request resolution velocity (30 points max), evaluating project activity over a 30-day sliding window.
+3. **Decoupled System Layers**: Seperate modules for API interaction (`github_agent.py`), multi-repository/organization aggregation (`multi_repo.py`), and presentation (`cli_interface.py`) ensure maintainability and testability.
+4. **Mocked Unit Test Strategy**: Used `pytest` with mocked response fixtures to achieve fast (<2s), offline test execution without consuming GitHub API quotas.
+
+---
+
+## Security
+
+- **Environment Isolation**: Secrets are loaded exclusively via environment variables (`python-dotenv`); `.env` is explicitly ignored by `.gitignore`.
+- **Zero Token Persistence**: Authentication tokens are passed via HTTP headers in-memory and are never cached or logged to disk.
+- **Input Sanitization**: Regex extraction cleans user strings to prevent injection or invalid URI generation.
+
+---
+
+## Testing
+
+```bash
+# Execute fast, offline unit test suite
+python3 -m pytest tests/ -v
+```
+
+The test suite covers:
+- Weighted activity score calculations
+- ISO timestamp recency evaluation (`_is_recent`)
+- Workflow run status aggregation
+- Intent & repository handle regex extraction
+- Organization report markdown formatting
+- API response exception handling
+
+---
+
+## Deployment
+
+The application is designed to run in any Python 3.8+ environment or Docker container:
+
+```bash
+# Run via Docker (if containerized)
+docker build -t github-ai-brain .
+docker run --rm -e GITHUB_TOKEN=$GITHUB_TOKEN github-ai-brain
+```
+
+---
+
+## Future Improvements
+
+- **GraphQL API Integration**: Add optional GraphQL endpoint support for bulk metadata queries.
+- **Local Response Caching**: Introduce SQLite or Redis caching to store repository metadata and respect rate limits.
+- **Export Capabilities**: Add JSON/CSV export options for organization audit reports.

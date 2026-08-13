@@ -1,185 +1,150 @@
 #!/usr/bin/env python3
 """
-GitHub AI Brain - Interactive CLI Interface
-Command-line interface for repository management
+💻 GitHub AI Brain - Interactive CLI Interface
+Terminal user interface for interactive repository intelligence and management.
 """
 
 import os
 import sys
-from typing import List, Dict
+from typing import List
 from github_agent import GitHubAIBrain
+from multi_repo import MultiRepoAnalyzer
+
 
 class GitHubCLI:
-    """Interactive command-line interface for GitHub AI Brain"""
-    
+    """Interactive command-line interface for GitHub AI Brain."""
+
     def __init__(self):
         self.agent = GitHubAIBrain()
+        self.multi_analyzer = MultiRepoAnalyzer(self.agent)
         self.running = True
-        
+
     def run(self):
-        """Start the interactive CLI session"""
+        """Start the interactive CLI loop."""
         self.show_welcome()
-        
+
         while self.running:
             try:
                 user_input = input("\n[GitHub AI Brain] > ").strip()
-                
+
                 if not user_input:
                     continue
-                
-                # Handle special commands
-                if user_input.lower() in ['exit', 'quit', 'q']:
+
+                cmd = user_input.lower()
+                if cmd in ["exit", "quit", "q"]:
                     self.running = False
-                    print("Goodbye! May your repositories be ever healthy!")
+                    print("\nGoodbye! May your repositories remain healthy and build green! 🚀")
                     break
-                elif user_input.lower() in ['help', 'h', '?']:
+                elif cmd in ["help", "h", "?"]:
                     self.show_help()
                     continue
-                elif user_input.lower() in ['clear', 'cls']:
-                    os.system('clear' if os.name == 'posix' else 'cls')
+                elif cmd in ["clear", "cls"]:
+                    os.system("clear" if os.name == "posix" else "cls")
                     continue
-                elif user_input.lower().startswith('demo'):
+                elif cmd.startswith("demo"):
                     self.run_demo()
                     continue
-                
-                # Process query through AI agent
-                print("\nProcessing your request...")
+
+                print("\nProcessing request...")
                 response = self.agent.query(user_input)
                 print(f"\n{response}")
-                
+
             except KeyboardInterrupt:
-                print("\n\nInterrupted. Use 'exit' to quit properly.")
+                print("\n\nSession interrupted. Type 'exit' to quit.")
                 continue
             except Exception as e:
-                print(f"\nError: {e}")
+                print(f"\n❌ Error processing query: {e}")
                 continue
-    
+
     def show_welcome(self):
-        """Display welcome message"""
+        """Display ASCII header banner and authentication notice."""
         print("""
 ================================================================
-           GITHUB AI BRAIN - MERGE WARS EDITION           
+           🤖 GITHUB AI BRAIN — REPOSITORY INTELLIGENCE          
 ================================================================
 
-An intelligent AI companion for repository management
-Powered by Model Context Protocol (MCP)
-Bringing balance to the repository chaos!
+An intelligent companion for repository metrics, activity scoring,
+workflow tracking, and organization-wide benchmarking.
 
-Type 'help' for available commands
-Type 'demo' to see example queries
+Type 'help' for command reference
+Type 'demo' for example queries
 Type 'exit' to quit
 """)
-        
-        # Check GitHub token status
-        if not os.getenv('GITHUB_TOKEN'):
+
+        if not os.getenv("GITHUB_TOKEN") and not os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"):
             print("""
-NOTICE: GitHub token not detected
-   * You'll have limited API access (60 requests/hour)
-   * Set GITHUB_TOKEN environment variable for full access
-   * Get a token at: https://github.com/settings/tokens
+⚠️  NOTICE: No GitHub Token Detected
+   • Operating under unauthenticated rate limits (60 req/hour).
+   • Set GITHUB_TOKEN in your environment or .env file for 5,000 req/hour.
 """)
         else:
-            print("GitHub token detected - Full API access enabled!")
-    
+            print("🔑 GitHub Token Authenticated — 5,000 requests/hour limit active.")
+
     def show_help(self):
-        """Display help information"""
+        """Display help guidance."""
         print("""
-GITHUB AI BRAIN HELP
+📖 GITHUB AI BRAIN COMMAND REFERENCE
 
-Natural Language Queries:
-   * "Analyze microsoft/vscode repository"
-   * "Show issues in facebook/react"
-   * "List pull requests in kubernetes/kubernetes"
-   * "Get recent commits from tensorflow/tensorflow"
-   * "Check workflow status in pytorch/pytorch"
-   * "Compare tensorflow/tensorflow vs pytorch/pytorch"
+Natural Language Query Examples:
+   • "Analyze microsoft/vscode repository"
+   • "Compare tensorflow/tensorflow vs pytorch/pytorch"
+   • "Analyze organization facebook"
+   • "Show open issues in facebook/react"
+   • "List pull requests in kubernetes/kubernetes"
+   • "Get recent commits from tensorflow/tensorflow"
+   • "Check workflow status in pytorch/pytorch"
 
-Special Commands:
-   * help, h, ?     - Show this help
-   * demo           - Show example queries
-   * clear, cls     - Clear screen
-   * exit, quit, q  - Exit the program
-
-Features:
-   * Repository health analysis
-   * Multi-repository comparison
-   * Issue and PR tracking
-   * Workflow monitoring
-   * Commit history analysis
-   * Natural language processing
+Built-In Shell Commands:
+   • help, h, ?     - Show this help summary
+   • demo           - Run interactive demo queries
+   • clear, cls     - Clear terminal window
+   • exit, quit, q  - Exit CLI session
 
 Repository Format:
-   Always use 'owner/repository' format (e.g., 'microsoft/vscode')
+   Always specify repos as 'owner/repo' (e.g., 'microsoft/vscode').
 """)
-    
+
     def run_demo(self):
-        """Run demonstration queries"""
+        """Run interactive demonstration sequence."""
         demo_queries = [
             "Analyze microsoft/vscode repository",
-            "Show issues in facebook/react",
+            "Show open issues in facebook/react",
             "List pull requests in kubernetes/kubernetes",
             "Get recent commits from tensorflow/tensorflow",
-            "Compare tensorflow/tensorflow vs pytorch/pytorch"
+            "Compare tensorflow/tensorflow vs pytorch/pytorch",
+            "Analyze organization facebook",
         ]
-        
-        print("""
-DEMO MODE - Example Queries
 
-Here are some example queries you can try:
-""")
-        
+        print("\n🎬 DEMO MODE — Available Queries:\n")
         for i, query in enumerate(demo_queries, 1):
-            print(f"{i}. \"{query}\"")
-        
-        print("\nTry typing any of these queries, or create your own!")
-        print("You can mix and match repositories and actions.")
-        
-        # Ask if user wants to run a demo query
+            print(f"  {i}. \"{query}\"")
+
         try:
-            choice = input("\nWant to run a demo query? Enter 1-5 or press Enter to skip: ").strip()
-            
-            if choice.isdigit() and 1 <= int(choice) <= 5:
-                selected_query = demo_queries[int(choice) - 1]
-                print(f"\nRunning demo query: \"{selected_query}\"")
+            choice = input("\nSelect a query number (1-6) or press Enter to skip: ").strip()
+            if choice.isdigit() and 1 <= int(choice) <= len(demo_queries):
+                selected = demo_queries[int(choice) - 1]
+                print(f"\nRunning: \"{selected}\"")
                 print("Processing...")
-                
-                response = self.agent.query(selected_query)
+                response = self.agent.query(selected)
                 print(f"\n{response}")
-                
+            else:
+                print("\nDemo mode exited. Ready for queries!")
         except (ValueError, KeyboardInterrupt):
-            print("\nDemo skipped. Ready for your queries!")
-    
-    def get_repositories_from_input(self) -> List[str]:
-        """Get repository list from user input"""
-        repos = []
-        print("\nEnter repositories (owner/repo format, one per line):")
-        print("Press Enter twice when done")
-        
-        while True:
-            try:
-                repo = input("Repository: ").strip()
-                if not repo:
-                    break
-                if '/' in repo:
-                    repos.append(repo)
-                else:
-                    print("Please use owner/repo format (e.g., microsoft/vscode)")
-            except KeyboardInterrupt:
-                break
-        
-        return repos
+            print("\nDemo skipped.")
+
 
 def main():
-    """Main entry point for CLI"""
+    """Main CLI entry point."""
     try:
         cli = GitHubCLI()
         cli.run()
     except KeyboardInterrupt:
-        print("\n\nGoodbye!")
+        print("\nGoodbye!")
         sys.exit(0)
     except Exception as e:
-        print(f"\nFatal error: {e}")
+        print(f"\nFatal error starting CLI: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

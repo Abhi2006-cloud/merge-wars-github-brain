@@ -1,98 +1,68 @@
 #!/usr/bin/env python3
 """
-Demonstration script showing all features for maximum points
+🌟 GitHub AI Brain — Feature Demonstration Script
+Executes comprehensive end-to-end demonstrations of repository health analysis,
+multi-repo competitive benchmarking, organization auditing, and query processing.
 """
 
-from github_agent import GitHubAIBrain
 import time
+from github_agent import GitHubAIBrain
+from multi_repo import MultiRepoAnalyzer
 
-def run_comprehensive_demo():
-    """Run demo covering all point categories"""
+
+def run_demo():
+    """Run full suite demonstration."""
     print("""
 ╔══════════════════════════════════════════════════════════════╗
-║                🌌 MERGE WARS DEMONSTRATION 🌌                ║  
-║              GitHub AI Brain - All Features                 ║
+║              🤖 GITHUB AI BRAIN DEMONSTRATION                ║
+║           Repository Health, Benchmarking & Intelligence     ║
 ╚══════════════════════════════════════════════════════════════╝
-    """)
-    
+""")
+
     agent = GitHubAIBrain()
-    
-    demos = [
+    analyzer = MultiRepoAnalyzer(agent)
+
+    test_scenarios = [
         {
-            "category": "Setup & Connectivity (4 points)",
-            "description": "Docker MCP server connection established",
-            "queries": ["Connection test - ready to process queries"]
+            "title": "1. Repository Health Analysis",
+            "query": "What is the health status of microsoft/vscode?",
         },
         {
-            "category": "Basic Tool Calls (11 points)", 
-            "description": "Demonstrating 5+ GitHub MCP tools",
-            "queries": [
-                "List recent issues in microsoft/vscode",
-                "Show pull requests in facebook/react",
-                "Get commits from kubernetes/kubernetes", 
-                "Check workflow runs in pytorch/pytorch",
-                "List branches in tensorflow/tensorflow"
-            ]
+            "title": "2. Competitive Repository Benchmarking",
+            "query": "Compare tensorflow/tensorflow vs pytorch/pytorch",
         },
         {
-            "category": "Query Handling (7 points)",
-            "description": "Natural language query processing",
-            "queries": [
-                "What's the health status of microsoft/vscode?",
-                "Show me any failing workflows in popular repositories"
-            ]
+            "title": "3. Organization-Wide Audit",
+            "query": "Analyze organization facebook",
         },
         {
-            "category": "Repository Insights (8 points)",
-            "description": "Deep analysis beyond raw data",
-            "queries": [
-                "Analyze repository health and identify bottlenecks in microsoft/vscode"
-            ]
+            "title": "4. Recent Commit Activity Tracking",
+            "query": "Get recent commits in kubernetes/kubernetes",
         },
         {
-            "category": "Multi-Repository Support (10 points)",
-            "description": "Cross-repository analysis and comparison", 
-            "queries": [
-                "Compare activity and health between tensorflow/tensorflow and pytorch/pytorch"
-            ]
+            "title": "5. Workflow Status Verification",
+            "query": "Check workflow status in pytorch/pytorch",
         },
-        {
-            "category": "Automation Features (5 points)",
-            "description": "Actionable suggestions and automation",
-            "queries": [
-                "Suggest process improvements for microsoft/vscode based on current patterns"
-            ]
-        }
     ]
-    
-    total_points = 0
-    
-    for demo in demos:
-        print(f"\n📊 {demo['category']}")
-        print(f"📝 {demo['description']}")
-        
-        points = int(demo['category'].split('(')[1].split(' ')[0])
-        total_points += points
-        
-        for query in demo['queries']:
-            if query == "Connection test - ready to process queries":
-                print(f"   ✅ {query}")
-                continue
-                
-            print(f"\n   🔍 Query: {query}")
-            try:
-                response = agent.query(query)
-                print(f"   ✅ Success: Generated {len(response)} character response")
-                print(f"   📄 Preview: {response[:150]}...")
-            except Exception as e:
-                print(f"   ❌ Error: {e}")
-            
-            time.sleep(1)  # Rate limiting
-    
-    print(f"\n🏆 DEMONSTRATION COMPLETE")
-    print(f"📈 Total Points Demonstrated: {total_points}/45")
-    print(f"⭐ Achievement: {'MAXIMUM POINTS' if total_points >= 40 else 'GOOD SCORE'}")
+
+    passed_count = 0
+
+    for scenario in test_scenarios:
+        print(f"\n📌 {scenario['title']}")
+        print(f"   🔍 Query: \"{scenario['query']}\"")
+        try:
+            response = agent.query(scenario["query"])
+            first_line = response.strip().split("\n")[0] if response else "No response"
+            print(f"   ✅ Result: Success ({len(response)} characters returned)")
+            print(f"   📄 Output Preview: {first_line}")
+            passed_count += 1
+        except Exception as e:
+            print(f"   ❌ Execution Error: {e}")
+
+        time.sleep(1)
+
+    print(f"\n🏆 DEMONSTRATION COMPLETE: {passed_count}/{len(test_scenarios)} scenarios executed successfully.")
+
 
 if __name__ == "__main__":
-    run_comprehensive_demo()
-
+    run_demo()
